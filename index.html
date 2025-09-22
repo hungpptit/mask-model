@@ -3,8 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <title>Mask Detection ESP32-CAM</title>
+  <!-- TensorFlow.js -->
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image"></script>
+  <!-- Teachable Machine Image UMD build -->
+  <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -46,6 +49,7 @@
       const modelURL = MODEL_URL + "model.json";
       const metadataURL = MODEL_URL + "metadata.json";
 
+      // load teachable machine model
       model = await tmImage.load(modelURL, metadataURL);
       maxPredictions = model.getTotalClasses();
 
@@ -68,11 +72,9 @@
 
       if (top.className === "Mask" && top.probability > 0.8) {
         result = `<span class="mask">✅ Đang đeo khẩu trang (${(top.probability*100).toFixed(1)}%)</span>`;
-        // Ví dụ: gửi lệnh về ESP32 bật LED
         // fetch(`http://${ESP32_IP}/control?cmd=led&state=off`);
       } else if (top.className === "NoMask" && top.probability > 0.8) {
         result = `<span class="nomask">❌ Không đeo khẩu trang (${(top.probability*100).toFixed(1)}%)</span>`;
-        // Ví dụ: gửi lệnh về ESP32 bật cảnh báo
         // fetch(`http://${ESP32_IP}/control?cmd=led&state=on`);
       } else {
         result = `Đang xử lý...`;
